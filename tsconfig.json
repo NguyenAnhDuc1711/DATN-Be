@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2022"], // ES2020 in earlier versions
+    "rootDir": "./src", // Source directory
+    "outDir": "./dist", // Output directory for compiled JS
+    // "strict": true, // Enable strict mode for better type safety
+    "allowJs": true, // Allows JS files in the project
+    "checkJs": false, // Disable type-checking for JS files
+    "esModuleInterop": true, // Enables better compatibility for CommonJS/ESM modules
+    "forceConsistentCasingInFileNames": true, // Ensures case-sensitive imports
+    "skipLibCheck": true, // Skips checking declaration files for better performance
+    "resolveJsonModule": true, // Allows importing `.json` files
+    // "noImplicitAny": true, // Disallow implicit `any` types
+    "noUnusedLocals": true, // Warn about unused variables
+    "noUnusedParameters": true, // Warn about unused function parameters
+    "noFallthroughCasesInSwitch": true, // Prevent fallthrough cases in switch statements
+    "noEmit": true,
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src"], // Includes the `src` directory
+  "exclude": ["node_modules", "dist"] // Exclude unnecessary files
+}
