@@ -1,0 +1,3 @@
+[submodule "src/Breads-Shared"]
+	path = src/Breads-Shared
+	url = https://github.com/NguyenAnhDuc1711/Breads-Shared
