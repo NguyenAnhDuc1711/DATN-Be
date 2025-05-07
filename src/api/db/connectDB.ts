@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import cron from "node-cron";
 
 const connectDB = async () => {
   try {

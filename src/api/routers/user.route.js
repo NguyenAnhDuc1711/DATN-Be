@@ -16,6 +16,7 @@ import {
   updateUser,
   getUsersPendingPost,
   getUsersWithStatus,
+  validateEmailByCode,
 } from "../controllers/user.controller.js";
 // import protectRoute from "../middlewares/protectRoute.js";
 import { USER_PATH } from "../../Breads-Shared/APIConfig.js";
@@ -38,6 +39,7 @@ const {
   GET_USER_ID_FROM_EMAIL,
   GET_USERS_PENDING_POST,
   GET_USERS_WITH_STATUS,
+  VALIDATE_USER_EMAIL,
 } = USER_PATH;
 
 router.get(USERS_FOLLOW, getUsersFollow);
@@ -56,5 +58,6 @@ router.put(CHANGE_PW + ":id", changePassword);
 router.post(CRAWL_USER, handleCrawlFakeUsers);
 router.post(CHECK_VALID_USER, checkValidUser);
 router.post(GET_USER_ID_FROM_EMAIL, getUserIdFromEmail);
+router.post(VALIDATE_USER_EMAIL, validateEmailByCode);
 
 export default router;

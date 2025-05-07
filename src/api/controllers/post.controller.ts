@@ -1,5 +1,7 @@
+import axios from "axios";
 import { Constants } from "../../Breads-Shared/Constants/index.js";
 import PostConstants from "../../Breads-Shared/Constants/PostConstants.js";
+import { getCache, setCache } from "../../redis/index.ts";
 import HTTPStatus from "../../util/httpStatus.js";
 import { ObjectId } from "../../util/index.js";
 import Category from "../models/category.model.js";
@@ -13,7 +15,6 @@ import {
   handleReplyForParentPost,
 } from "../services/post.js";
 import { uploadFileFromBase64 } from "../utils/index.js";
-import axios from "axios";
 
 //create post
 export const createPost = async (req, res) => {
@@ -101,28 +102,24 @@ export const createPost = async (req, res) => {
     const optionsId = newSurvey.map((option) => option?._id);
     const newUsersTag = usersTag.map((userId) => ObjectId(userId));
     let categories = [];
-    try {
-      if (!!content.trim()) {
-        const { data: relatedCategories } = await axios.post(
-          process.env.PYTHON_SERVER + "/search",
-          {
-            query: content,
-          }
-        );
-        if (relatedCategories?.length) {
-          const catesQuery = await Category.find(
-            {
-              name: {
-                $in: relatedCategories,
-              },
-            },
-            { _id: 1 }
-          );
-          categories = catesQuery?.map(({ _id }) => _id);
+    if (!!content.trim()) {
+      const { data: relatedCategories } = await axios.post(
+        process.env.PYTHON_SERVER + "/search",
+        {
+          query: content,
         }
+      );
+      if (relatedCategories?.length) {
+        const catesQuery = await Category.find(
+          {
+            name: {
+              $in: relatedCategories,
+            },
+          },
+          { _id: 1 }
+        );
+        categories = catesQuery?.map(({ _id }) => _id);
       }
-    } catch (err) {
-      console.log("err");
     }
     const newPostPayload: any = {
       _id: ObjectId(_id),
@@ -255,10 +252,9 @@ export const updatePost = async (req, res) => {
     post.survey = survey;
     post = await post.save();
     res.status(HTTPStatus.OK).json(post);
-  } catch (error) {
-    console.log("updatePost: ", error);
-
-    res.status(HTTPStatus.SERVER_ERR).json({ error: error.message });
+  } catch (err) {
+    console.log("updatePost: ", err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -292,6 +288,16 @@ export const likeUnlikePost = async (req, res) => {
 export const getPosts = async (req, res) => {
   try {
     const payload = req.query;
+    const userId = payload.userId;
+    const page = payload.page;
+    const cacheKey = `feed:${userId}`;
+    const cacheFeed = await getCache(cacheKey);
+    if (cacheFeed) {
+      const numberFeedPageCached = (cacheFeed as any)?.length;
+      if (Number(page) <= numberFeedPageCached) {
+        return res.status(200).json(cacheFeed?.[page - 1]);
+      }
+    }
     const data = await getPostsIdByFilter(payload);
     let result = [];
     if (data?.length) {
@@ -299,6 +305,14 @@ export const getPosts = async (req, res) => {
         data.map((id) => getPostDetail({ postId: id }))
       );
     }
+    let newCacheFeed;
+    if (cacheFeed) {
+      newCacheFeed = [...(cacheFeed as any), result];
+    } else {
+      newCacheFeed = result?.length ? [result] : [];
+    }
+    const numberHourExpireCache = 1;
+    await setCache(cacheKey, newCacheFeed, numberHourExpireCache * 60 * 60);
     res.status(HTTPStatus.OK).json(result);
   } catch (err) {
     console.log("getPosts: ", err);

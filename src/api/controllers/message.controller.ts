@@ -1,9 +1,9 @@
-import { ObjectId, destructObjectId } from "../../util/index.js";
 import HTTPStatus from "../../util/httpStatus.js";
-import Conversation from "../models/conversation.model.js";
-import Message from "../models/message.model.js";
-import Link from "../models/link.model.js";
+import { ObjectId, destructObjectId } from "../../util/index.js";
 import { genConversations, genMsgsInConversations } from "../crawl.js";
+import Conversation from "../models/conversation.model.js";
+import Link from "../models/link.model.js";
+import Message from "../models/message.model.js";
 import { getConversationInfo } from "../services/message.js";
 
 export const getConversationByUsersId = async (req, res) => {

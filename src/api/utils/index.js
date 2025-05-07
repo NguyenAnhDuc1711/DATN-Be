@@ -806,3 +806,54 @@ export const emailFormWithHtml = (html) => {
 </html>
 `;
 };
+
+export const validateEmailForm = (code, expireTime) => {
+  return `
+  <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Email Verification</title>
+  </head>
+  <body style="margin:0; padding:0; background-color:#f4f4f4;">
+    <table cellpadding="0" cellspacing="0" width="100%" style="background-color:#f4f4f4; padding: 20px 0;">
+      <tr>
+        <td align="center">
+          <table cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; padding: 30px; font-family: Arial, sans-serif; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+            <tr>
+              <td align="center" style="padding-bottom: 20px;">
+                <h2 style="color: #333;">Verify Your Email Address</h2>
+              </td>
+            </tr>
+            <tr>
+              <td style="color: #555; font-size: 16px; line-height: 1.5; padding-bottom: 20px;">
+                Thanks for signing up! Please use the following code to verify your email address and complete your account setup:
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-bottom: 20px;">
+                <div style="display: inline-block; background-color: #f0f0f0; color: #333; font-size: 24px; font-weight: bold; padding: 12px 24px; border-radius: 6px; letter-spacing: 4px;">
+                  <!-- Replace this dynamically -->
+                  ${code}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="color: #777; font-size: 14px; padding-top: 20px;">
+                This code will expire in ${expireTime} minutes. If you did not request this, please ignore this email.
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-top: 30px; font-size: 12px; color: #aaa;">
+                &copy; 2025 Breads. All rights reserved.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+
+  `;
+};

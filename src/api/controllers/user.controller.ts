@@ -1,4 +1,6 @@
 import { Constants } from "../../Breads-Shared/Constants/index.js";
+import { genRandomCode } from "../../Breads-Shared/util/index.js";
+import { deleteCache, getCache, setCache } from "../../redis/index.ts";
 import HTTPStatus from "../../util/httpStatus.js";
 import { ObjectId } from "../../util/index.js";
 import { crawlUser } from "../crawl.js";
@@ -6,7 +8,8 @@ import Collection from "../models/collection.model.js";
 import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 import { getUserInfo, getUsersByPage, updateFollow } from "../services/user.js";
-import { uploadFileFromBase64 } from "../utils/index.js";
+import { sendMailService } from "../services/util.js";
+import { uploadFileFromBase64, validateEmailForm } from "../utils/index.js";
 
 export const getAdminAccount = async (req, res) => {
   try {
@@ -55,24 +58,89 @@ export const signupUser = async (req, res) => {
 
     // const salt = await bcrypt.genSalt(10);
     // const hashPassword = await bcrypt.hash(password, salt);
-    const newUser = new User({
-      name,
-      email,
-      username,
-      password: password,
+
+    // const newUser = new User({
+    //   name,
+    //   email,
+    //   username,
+    //   password: password,
+    // });
+    // await newUser.save();
+
+    // if (newUser) {
+    //   // generateTokenAndSetCookie(newUser._id, res);
+    //   res.status(HTTPStatus.CREATED).json({ message: "Tạo mới thành công" });
+    // } else {
+    //   res
+    //     .status(HTTPStatus.BAD_REQUEST)
+    //     .json({ error: "Tạo mới không thành công" });
+    // }
+    const expireTime = 10; // Minutes
+    const code = genRandomCode();
+    const result = await sendMailService({
+      from: "mraducky@gmail.com",
+      to: email,
+      subject: "Validation for creating Breads account",
+      html: validateEmailForm(code, expireTime),
     });
-    await newUser.save();
-    if (newUser) {
-      // generateTokenAndSetCookie(newUser._id, res);
-      res.status(HTTPStatus.CREATED).json({ message: "Tạo mới thành công" });
-    } else {
-      res
-        .status(HTTPStatus.BAD_REQUEST)
-        .json({ error: "Tạo mới không thành công" });
+
+    if (result) {
+      const keyCache = `mail_validation_${email}`;
+      await setCache(
+        keyCache,
+        JSON.stringify({ name, email, username, password, code }),
+        expireTime * 60
+      );
+      res.status(200).json("Mail was sent");
     }
   } catch (err) {
     res.status(HTTPStatus.SERVER_ERR).json({ error: "Server lỗi" });
     console.log("Error in Signup User", err.message);
+  }
+};
+
+export const validateEmailByCode = async (req, res) => {
+  try {
+    const { email, code } = req.body;
+    const keyCache = `mail_validation_${email}`;
+    const validationMailInfo = JSON.parse(await getCache(keyCache));
+    if (validationMailInfo) {
+      if (code === validationMailInfo?.code) {
+        const { name, username, password } = validationMailInfo;
+        const newUser = new User({
+          name,
+          email,
+          username,
+          password: password,
+        });
+        await newUser.save();
+
+        if (newUser) {
+          // generateTokenAndSetCookie(newUser._id, res);
+          await deleteCache(keyCache);
+          return res
+            .status(HTTPStatus.CREATED)
+            .json({ message: "Tạo mới thành công" });
+        } else {
+          return res
+            .status(HTTPStatus.BAD_REQUEST)
+            .json({ error: "Tạo mới không thành công" });
+        }
+      } else {
+        return res.status(HTTPStatus.BAD_REQUEST).json({
+          errorType: "INCORRECT_CODE",
+          error: "Incorrect code",
+        });
+      }
+    } else {
+      return res.status(HTTPStatus.BAD_REQUEST).json({
+        errorType: "EXPIRED_CODE",
+        error: "Validation code has been expired",
+      });
+    }
+  } catch (err) {
+    console.log("validateEmailByCode err: ", err);
+    res.status(HTTPStatus.SERVER_ERR).json(err);
   }
 };
 
@@ -180,7 +248,7 @@ export const updateUser = async (req, res) => {
           }
           break;
         case "links":
-          const checkLinks = value.every(
+          const checkLinks = (value as string[]).every(
             (link) => link.match(urlRegex)?.length > 0
           );
           if (checkLinks) {

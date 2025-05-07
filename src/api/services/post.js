@@ -285,7 +285,7 @@ export const getPostsIdByFilter = async (payload) => {
     let query = {};
     let project = { _id: 1 };
     let sort = { createdAt: -1 };
-    switch (filter.page) {
+    switch (filter?.page) {
       case PageConstant.SAVED:
         data = (
           await Collection.findOne({ userId: ObjectId(userId) })
@@ -333,7 +333,7 @@ export const getPostsIdByFilter = async (payload) => {
     }
     if (
       Object.keys(query).length > 0 ||
-      filter.page === PageConstant.ADMIN.POSTS
+      filter?.page === PageConstant.ADMIN.POSTS
     ) {
       data = await Post.find(query, project).skip(skip).limit(limit).sort(sort);
     }

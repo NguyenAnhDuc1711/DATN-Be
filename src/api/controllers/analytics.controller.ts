@@ -1,6 +1,6 @@
+import { Request, Response } from "express";
 import { ObjectId } from "../../util/index.js";
 import AnalyticsModel from "../models/analytics.model.js";
-import { Request, Response } from "express";
 
 interface CreateEventRequest extends Request {
   body: {
