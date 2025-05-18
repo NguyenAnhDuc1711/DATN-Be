@@ -6,7 +6,7 @@ const AnalyticsListener = (socket: Socket, io: Server) => {
   socket.on(
     Route.ANALYTICS + ANALYTICS_PATH.GET_SNAPSHOT_REPORT,
     (payload: any, cb: Function) => {
-      AnalyticsController.getSnapshotReport(payload, cb, io);
+      AnalyticsController.getSnapshotReport(payload, cb);
     }
   );
 };

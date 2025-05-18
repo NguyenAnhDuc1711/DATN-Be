@@ -1,4 +1,3 @@
-import { Server } from "socket.io";
 import {
   destructObjectId,
   formatDate,
@@ -10,15 +9,20 @@ import {
 
 const getUserActiveData = (datesData, dateRange) => {
   const result = dateRange.map((date) => {
+    // Get all user IDs for the date
+    const userIds = datesData
+      .filter((event) => formatDate(event.createdAt) == date)
+      .map((event) => destructObjectId(event.userId));
+
+    // Deduplicate using object keys instead of Set
+    const uniqueIds = {};
+    userIds.forEach((id) => {
+      uniqueIds[id] = true;
+    });
+
     return {
       date: date,
-      data: [
-        ...new Set(
-          datesData
-            .filter((event) => formatDate(event.createdAt) == date)
-            .map((event) => destructObjectId(event.userId))
-        ),
-      ].length,
+      data: Object.keys(uniqueIds).length,
     };
   });
   return result;
@@ -70,32 +74,87 @@ const getEventsData = (datesData) => {
 };
 
 export default class AnalyticsController {
-  static async getSnapshotReport(payload: any, cb: Function, io: Server) {
+  static async getSnapshotReport(payload: any, cb: Function) {
     const { dateRange } = payload;
     const fromDate = dateRange[0];
     const toDate = dateRange[1];
     const dateRangeArr = getDatesInRange(fromDate, toDate);
-    const totalData: any = [];
-    for (const date of dateRangeArr) {
-      const table = await getAnalyticsDateCollection(date);
-      if (table) {
-        const cursor = await table.find({});
-        const data = await cursor.toArray();
-        totalData.push(...data);
-      }
-    }
-    const userActiveData = getUserActiveData(totalData, dateRangeArr);
-    const userDeviceData = getUserDeviceData(totalData);
-    const userLocaleData = getUserLocaleData(totalData);
-    const eventsData = getEventsData(totalData);
-    const userOSData = getUserOS(totalData);
 
-    cb({
-      active: userActiveData,
-      device: userDeviceData,
-      locale: userLocaleData,
-      event: eventsData,
-      os: userOSData,
+    try {
+      // Process collections in parallel using Promise.all
+      const dataPromises = dateRangeArr.map(async (date) => {
+        const table = await getAnalyticsDateCollection(date);
+        if (!table) return [];
+
+        // Include all fields needed by the processing functions
+        const cursor = await table.find(
+          {},
+          {
+            projection: {
+              createdAt: 1,
+              userId: 1,
+              deviceInfo: 1,
+              localeInfo: 1,
+              browserInfo: 1,
+              event: 1,
+            },
+          }
+        );
+
+        return cursor.toArray();
+      });
+
+      // Wait for all queries to complete in parallel
+      const results = await Promise.all(dataPromises);
+
+      // Flatten the array of arrays
+      const totalData = results.flat();
+
+      // Process the data for different metrics
+      const userActiveData = getUserActiveData(totalData, dateRangeArr);
+      const userDeviceData = getUserDeviceData(totalData);
+      const userLocaleData = getUserLocaleData(totalData);
+      const eventsData = getEventsData(totalData);
+      const userOSData = getUserOS(totalData);
+
+      // Return the processed data
+      cb({
+        active: userActiveData,
+        device: userDeviceData,
+        locale: userLocaleData,
+        event: eventsData,
+        os: userOSData,
+      });
+    } catch (error) {
+      console.error("Error fetching analytics data:", error);
+      cb({ error: "Failed to retrieve analytics data" });
+    }
+  }
+
+  // Add a method for cached reporting
+  static cachedReports = new Map();
+  static cacheExpiryTime = 5 * 60 * 1000; // 5 minutes
+
+  static async getCachedSnapshotReport(payload: any, cb: Function) {
+    const { dateRange } = payload;
+    const cacheKey = `${dateRange[0]}_${dateRange[1]}`;
+
+    // Check if we have a valid cached result
+    const cachedItem = this.cachedReports.get(cacheKey);
+    if (
+      cachedItem &&
+      Date.now() - cachedItem.timestamp < this.cacheExpiryTime
+    ) {
+      return cb(cachedItem.data);
+    }
+
+    // If no valid cache, get new data and cache it
+    this.getSnapshotReport(payload, (data) => {
+      this.cachedReports.set(cacheKey, {
+        timestamp: Date.now(),
+        data,
+      });
+      cb(data);
     });
   }
 }

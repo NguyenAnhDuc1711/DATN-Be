@@ -1,6 +1,26 @@
 import cloudinary from "cloudinary";
 import axios from "axios";
 
+export const parseFlattenedQuery = (query) => {
+  const result = {};
+
+  for (const key in query) {
+    if (key.includes("[") && key.includes("]")) {
+      // Handle nested parameters like 'filter[page]'
+      const [parent, child] = key.split("[").map((k) => k.replace("]", ""));
+      if (!result[parent]) {
+        result[parent] = {};
+      }
+      result[parent][child] = query[key];
+    } else {
+      // Handle regular parameters
+      result[key] = query[key];
+    }
+  }
+
+  return result;
+};
+
 export const uploadFileFromBase64 = async ({ base64, style = null }) => {
   try {
     if (!base64) {

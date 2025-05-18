@@ -14,7 +14,7 @@ import {
   getPostsIdByFilter,
   handleReplyForParentPost,
 } from "../services/post.js";
-import { uploadFileFromBase64 } from "../utils/index.js";
+import { parseFlattenedQuery, uploadFileFromBase64 } from "../utils/index.js";
 
 //create post
 export const createPost = async (req, res) => {
@@ -103,22 +103,26 @@ export const createPost = async (req, res) => {
     const newUsersTag = usersTag.map((userId) => ObjectId(userId));
     let categories = [];
     if (!!content.trim()) {
-      const { data: relatedCategories } = await axios.post(
-        process.env.PYTHON_SERVER + "/search",
-        {
-          query: content,
-        }
-      );
-      if (relatedCategories?.length) {
-        const catesQuery = await Category.find(
+      try {
+        const { data: relatedCategories } = await axios.post(
+          process.env.PYTHON_SERVER + "/search",
           {
-            name: {
-              $in: relatedCategories,
-            },
-          },
-          { _id: 1 }
+            query: content,
+          }
         );
-        categories = catesQuery?.map(({ _id }) => _id);
+        if (relatedCategories?.length) {
+          const catesQuery = await Category.find(
+            {
+              name: {
+                $in: relatedCategories,
+              },
+            },
+            { _id: 1 }
+          );
+          categories = catesQuery?.map(({ _id }) => _id);
+        }
+      } catch (err) {
+        console.log("error when get related categories: ", err);
       }
     }
     const newPostPayload: any = {
@@ -288,12 +292,16 @@ export const likeUnlikePost = async (req, res) => {
 export const getPosts = async (req, res) => {
   try {
     const payload = req.query;
+    const filter = payload?.filter;
+    const pageFilter = filter?.page;
     const userId = payload.userId;
     const page = payload.page;
-    const cacheKey = `feed:${userId}`;
+    const cacheKey = `feed:${pageFilter}:${userId}`;
     const cacheFeed = await getCache(cacheKey);
     if (cacheFeed) {
       const numberFeedPageCached = (cacheFeed as any)?.length;
+      console.log("page: ", page);
+      console.log("numberFeedPageCached: ", numberFeedPageCached);
       if (Number(page) <= numberFeedPageCached) {
         return res.status(200).json(cacheFeed?.[page - 1]);
       }
