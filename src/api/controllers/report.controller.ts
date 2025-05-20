@@ -22,6 +22,9 @@ export const sendReport = async (req, res) => {
       }
     );
     const userEmail = userInfo?.email;
+    if (!userEmail) {
+      return res.status(HTTPStatus.BAD_REQUEST).json("Invalid user email");
+    }
     let newMedia = [];
     if (media?.length > 0) {
       for (let fileInfo of media) {
@@ -59,6 +62,11 @@ export const getReports = async (req, res) => {
       return res.status(HTTPStatus.BAD_REQUEST).json("Unauthorization");
     }
     const agg = [
+      {
+        $match: {
+          status: Constants.REPORT_STATUS.PENDING,
+        },
+      },
       {
         $lookup: {
           from: "users",
@@ -103,6 +111,11 @@ export const getReports = async (req, res) => {
               },
             },
           ],
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
         },
       },
     ];

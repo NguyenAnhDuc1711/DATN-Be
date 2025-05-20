@@ -340,6 +340,7 @@ export const getPostsIdByFilter = async (payload) => {
     return data;
   } catch (err) {
     console.log("getPostsIdByFilter: ", err);
+    return [];
   }
 };
 

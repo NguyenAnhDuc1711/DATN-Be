@@ -9,6 +9,9 @@ import { getConversationInfo } from "../services/message.js";
 export const getConversationByUsersId = async (req, res) => {
   try {
     const { userId, anotherId } = req.body;
+    if (!userId || !anotherId) {
+      return res.status(HTTPStatus.BAD_REQUEST).json("Empty payload");
+    }
     const data = await Conversation.findOne({
       participants: { $all: [userId, anotherId] },
     })

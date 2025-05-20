@@ -14,7 +14,7 @@ import {
   getPostsIdByFilter,
   handleReplyForParentPost,
 } from "../services/post.js";
-import { parseFlattenedQuery, uploadFileFromBase64 } from "../utils/index.js";
+import { uploadFileFromBase64 } from "../utils/index.js";
 
 //create post
 export const createPost = async (req, res) => {
@@ -298,10 +298,9 @@ export const getPosts = async (req, res) => {
     const page = payload.page;
     const cacheKey = `feed:${pageFilter}:${userId}`;
     const cacheFeed = await getCache(cacheKey);
-    if (cacheFeed) {
+    console.log("pageFilter: ", pageFilter);
+    if (cacheFeed && !pageFilter?.includes("admin")) {
       const numberFeedPageCached = (cacheFeed as any)?.length;
-      console.log("page: ", page);
-      console.log("numberFeedPageCached: ", numberFeedPageCached);
       if (Number(page) <= numberFeedPageCached) {
         return res.status(200).json(cacheFeed?.[page - 1]);
       }

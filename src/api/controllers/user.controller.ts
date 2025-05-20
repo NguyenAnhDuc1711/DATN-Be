@@ -9,6 +9,7 @@ import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 import { getUserInfo, getUsersByPage, updateFollow } from "../services/user.js";
 import { sendMailService } from "../services/util.js";
+import generateTokenAndSetCookie from "../utils/genarateTokenAndSetCookie.js";
 import { uploadFileFromBase64, validateEmailForm } from "../utils/index.js";
 
 export const getAdminAccount = async (req, res) => {
@@ -168,6 +169,7 @@ export const loginUser = async (req, res) => {
 
     // generateTokenAndSetCookie(user._id, res);
     const result = await getUserInfo(user._id);
+    generateTokenAndSetCookie(user._id, res);
 
     res.status(HTTPStatus.OK).json(result);
   } catch (err) {

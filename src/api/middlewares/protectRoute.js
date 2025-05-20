@@ -12,9 +12,7 @@ const protectRoute = async (req, res, next) => {
         .json({ message: "Unauthorized" });
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded.userId);
     const user = await User.findById(decoded.userId).select("-password");
-    console.log(user)
     req.user = user;
 
     next();
