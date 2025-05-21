@@ -8,7 +8,10 @@ import {
   updateUsersCatesCron,
 } from "./cronjob/index.js";
 import router from "./api/routers/index.js";
-
+import {
+  assignRandomCategoriesToUsers,
+  getPostsWithContent,
+} from "./api/controllers/categories.controller.js";
 // Connect to MongoDB
 connectDB();
 
@@ -31,5 +34,6 @@ app.use("/api", router);
 
 // createDailyCollectionCron();
 // updateUsersCatesCron();
-
+app.get("/api/posts", getPostsWithContent);
+app.get("/api/assign-categories", assignRandomCategoriesToUsers);
 export default app;

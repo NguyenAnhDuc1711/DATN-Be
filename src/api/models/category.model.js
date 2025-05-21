@@ -6,8 +6,8 @@ const categorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  parentId: {
-    type: ObjectId,
+  keywords: {
+    type: [String],
     required: false,
   },
 });

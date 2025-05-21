@@ -1,0 +1,677 @@
+[
+  {
+    "name": "Motivation & Inspiration",
+    "keywords": [
+      "success",
+      "positivity",
+      "ambition",
+      "goals",
+      "self-belief",
+      "determination",
+      "empowerment",
+      "life purpose",
+      "motivational quotes",
+      "dream big"
+    ]
+  },
+  {
+    "name": "Self-Improvement",
+    "keywords": [
+      "habit change",
+      "growth mindset",
+      "time management",
+      "self-awareness",
+      "goal setting",
+      "self-discipline",
+      "accountability",
+      "life coaching",
+      "journaling",
+      "personal growth"
+    ]
+  },
+  {
+    "name": "Fitness & Exercise",
+    "keywords": [
+      "gym workout",
+      "bodyweight training",
+      "running",
+      "strength training",
+      "HIIT",
+      "yoga routine",
+      "cardio fitness",
+      "stretching",
+      "fitness tracker",
+      "physical endurance"
+    ]
+  },
+  {
+    "name": "Mental Health",
+    "keywords": [
+      "anxiety support",
+      "therapy tips",
+      "mindfulness",
+      "emotional healing",
+      "depression help",
+      "mental resilience",
+      "stress relief",
+      "coping skills",
+      "self-care habits",
+      "mood tracking"
+    ]
+  },
+  {
+    "name": "Health & Wellness",
+    "keywords": [
+      "balanced diet",
+      "meditation",
+      "healthy habits",
+      "wellness journey",
+      "detox plans",
+      "hydration tips",
+      "natural remedies",
+      "immune health",
+      "wellness routines",
+      "health checkups"
+    ]
+  },
+  {
+    "name": "Food & Recipes",
+    "keywords": [
+      "quick meals",
+      "vegan dishes",
+      "baking tips",
+      "healthy snacks",
+      "international food",
+      "dessert ideas",
+      "budget meals",
+      "meal prep",
+      "slow cooker",
+      "comfort food"
+    ]
+  },
+  {
+    "name": "Travel & Adventure",
+    "keywords": [
+      "backpacking",
+      "hidden gems",
+      "travel hacks",
+      "cultural experiences",
+      "nature exploration",
+      "digital nomad",
+      "solo travel",
+      "travel vlogs",
+      "passport tips",
+      "road trips"
+    ]
+  },
+  {
+    "name": "Beauty & Skincare",
+    "keywords": [
+      "skincare routine",
+      "makeup tips",
+      "acne treatment",
+      "glowing skin",
+      "natural products",
+      "anti-aging",
+      "beauty hacks",
+      "facial care",
+      "product reviews",
+      "clean beauty"
+    ]
+  },
+  {
+    "name": "Fashion & Style",
+    "keywords": [
+      "outfit ideas",
+      "fashion trends",
+      "style inspiration",
+      "seasonal looks",
+      "wardrobe essentials",
+      "accessory tips",
+      "street style",
+      "shopping guides",
+      "personal style",
+      "runway fashion"
+    ]
+  },
+  {
+    "name": "Relationships & Dating",
+    "keywords": [
+      "dating advice",
+      "relationship tips",
+      "love language",
+      "couple goals",
+      "breakup recovery",
+      "online dating",
+      "marriage advice",
+      "healthy communication",
+      "long-distance",
+      "romantic ideas"
+    ]
+  },
+  {
+    "name": "Parenting",
+    "keywords": [
+      "raising kids",
+      "toddler tips",
+      "parenting hacks",
+      "discipline ideas",
+      "child development",
+      "newborn care",
+      "family bonding",
+      "educational games",
+      "parenting humor",
+      "school readiness"
+    ]
+  },
+  {
+    "name": "Productivity Tips",
+    "keywords": [
+      "to-do lists",
+      "focus hacks",
+      "time-blocking",
+      "Pomodoro technique",
+      "goal planning",
+      "morning routines",
+      "work efficiency",
+      "apps for productivity",
+      "eliminating distractions",
+      "task batching"
+    ]
+  },
+  {
+    "name": "Career Development",
+    "keywords": [
+      "resume tips",
+      "interview prep",
+      "networking strategies",
+      "job search",
+      "career goals",
+      "professional growth",
+      "office skills",
+      "promotion tips",
+      "career switch",
+      "mentorship"
+    ]
+  },
+  {
+    "name": "Side Hustles",
+    "keywords": [
+      "freelancing",
+      "online gigs",
+      "digital products",
+      "selling crafts",
+      "consulting",
+      "affiliate marketing",
+      "gig economy",
+      "passive income",
+      "Etsy shop",
+      "self-employment"
+    ]
+  },
+  {
+    "name": "Entrepreneurship",
+    "keywords": [
+      "startup ideas",
+      "business planning",
+      "branding tips",
+      "pitching investors",
+      "launching products",
+      "scaling up",
+      "business mindset",
+      "customer acquisition",
+      "market research",
+      "founder stories"
+    ]
+  },
+  {
+    "name": "Social Media Tips",
+    "keywords": [
+      "content strategy",
+      "hashtags",
+      "engagement boost",
+      "posting schedule",
+      "analytics tools",
+      "brand building",
+      "influencer marketing",
+      "social proof",
+      "platform algorithms",
+      "content calendar"
+    ]
+  },
+  {
+    "name": "Personal Finance",
+    "keywords": [
+      "budget planning",
+      "saving money",
+      "debt repayment",
+      "credit score",
+      "frugal living",
+      "emergency fund",
+      "money habits",
+      "financial goals",
+      "smart spending",
+      "money mindset"
+    ]
+  },
+  {
+    "name": "Investing & Stocks",
+    "keywords": [
+      "stock market",
+      "dividends",
+      "portfolio building",
+      "risk management",
+      "ETF investing",
+      "retirement accounts",
+      "real estate investing",
+      "crypto trading",
+      "long-term growth",
+      "index funds"
+    ]
+  },
+  {
+    "name": "Digital Marketing",
+    "keywords": [
+      "SEO basics",
+      "email marketing",
+      "PPC ads",
+      "content creation",
+      "sales funnels",
+      "brand awareness",
+      "conversion rates",
+      "analytics tools",
+      "social media ads",
+      "keyword research"
+    ]
+  },
+  {
+    "name": "Programming & Coding",
+    "keywords": [
+      "Python projects",
+      "JavaScript tutorials",
+      "coding challenges",
+      "web development",
+      "debugging tips",
+      "API integration",
+      "GitHub workflow",
+      "full-stack dev",
+      "code optimization",
+      "career in tech"
+    ]
+  },
+  {
+    "name": "Web Development",
+    "keywords": [
+      "frontend frameworks",
+      "backend servers",
+      "HTML & CSS",
+      "JavaScript libraries",
+      "responsive design",
+      "hosting platforms",
+      "code deployment",
+      "CMS tools",
+      "developer tools",
+      "performance tuning"
+    ]
+  },
+  {
+    "name": "Artificial Intelligence",
+    "keywords": [
+      "machine learning",
+      "neural networks",
+      "AI ethics",
+      "computer vision",
+      "NLP",
+      "chatbots",
+      "automation",
+      "deep learning",
+      "AI applications",
+      "generative models"
+    ]
+  },
+  {
+    "name": "Gaming",
+    "keywords": [
+      "game reviews",
+      "walkthroughs",
+      "streaming tips",
+      "console games",
+      "PC gaming",
+      "mobile games",
+      "esports tournaments",
+      "multiplayer mode",
+      "modding",
+      "gaming news"
+    ]
+  },
+  {
+    "name": "Books & Reading",
+    "keywords": [
+      "book reviews",
+      "reading list",
+      "fiction favorites",
+      "non-fiction gems",
+      "author insights",
+      "literary analysis",
+      "book clubs",
+      "bestsellers",
+      "reading goals",
+      "audiobooks"
+    ]
+  },
+  {
+    "name": "Movies & TV Shows",
+    "keywords": [
+      "film reviews",
+      "movie trailers",
+      "actor interviews",
+      "series recaps",
+      "top-rated movies",
+      "hidden gems",
+      "Netflix picks",
+      "binge-worthy shows",
+      "TV schedule",
+      "fan theories"
+    ]
+  },
+  {
+    "name": "Music & Playlists",
+    "keywords": [
+      "song recommendations",
+      "music genres",
+      "new releases",
+      "live performances",
+      "music videos",
+      "playlists for mood",
+      "underrated artists",
+      "album reviews",
+      "musician interviews",
+      "concert clips"
+    ]
+  },
+  {
+    "name": "Education & Learning",
+    "keywords": [
+      "study techniques",
+      "online courses",
+      "learning apps",
+      "time management",
+      "test prep",
+      "academic writing",
+      "educational podcasts",
+      "language learning",
+      "memorization tips",
+      "study tools"
+    ]
+  },
+  {
+    "name": "DIY & Crafts",
+    "keywords": [
+      "home decor",
+      "upcycling",
+      "craft tutorials",
+      "budget crafts",
+      "kids DIY",
+      "holiday decorations",
+      "sewing tips",
+      "creative projects",
+      "handmade gifts",
+      "recycled art"
+    ]
+  },
+  {
+    "name": "Home & Living",
+    "keywords": [
+      "interior design",
+      "organization hacks",
+      "cleaning tips",
+      "home improvement",
+      "minimalism",
+      "eco-friendly living",
+      "storage ideas",
+      "smart home tech",
+      "daily routines",
+      "budget decor"
+    ]
+  },
+  {
+    "name": "Photography",
+    "keywords": [
+      "camera gear",
+      "editing tips",
+      "composition rules",
+      "lighting tricks",
+      "photo challenges",
+      "portrait photography",
+      "nature shots",
+      "urban photography",
+      "photo contests",
+      "filter presets"
+    ]
+  },
+  {
+    "name": "Pets & Animals",
+    "keywords": [
+      "pet care",
+      "training tips",
+      "animal rescue",
+      "cute videos",
+      "pet food advice",
+      "vet checkups",
+      "pet adoption",
+      "animal facts",
+      "pet safety",
+      "pet grooming"
+    ]
+  },
+  {
+    "name": "Science & Tech News",
+    "keywords": [
+      "space discoveries",
+      "medical breakthroughs",
+      "tech innovations",
+      "AI developments",
+      "climate science",
+      "robotics",
+      "new gadgets",
+      "quantum computing",
+      "future trends",
+      "scientific research"
+    ]
+  },
+  {
+    "name": "Climate & Environment",
+    "keywords": [
+      "climate change",
+      "recycling tips",
+      "green living",
+      "renewable energy",
+      "wildlife protection",
+      "eco habits",
+      "sustainable fashion",
+      "carbon footprint",
+      "plastic-free lifestyle",
+      "climate activism"
+    ]
+  },
+  {
+    "name": "Mindfulness & Meditation",
+    "keywords": [
+      "deep breathing",
+      "meditation music",
+      "body scan",
+      "daily mindfulness",
+      "guided sessions",
+      "stress release",
+      "mental clarity",
+      "inner peace",
+      "awareness practice",
+      "calm thoughts"
+    ]
+  },
+  {
+    "name": "Philosophy & Thinking",
+    "keywords": [
+      "critical thinking",
+      "stoicism",
+      "moral dilemmas",
+      "logic puzzles",
+      "deep questions",
+      "ancient philosophy",
+      "existentialism",
+      "modern thinkers",
+      "thought experiments",
+      "life purpose"
+    ]
+  },
+  {
+    "name": "History & Events",
+    "keywords": [
+      "ancient civilizations",
+      "war stories",
+      "historic speeches",
+      "famous battles",
+      "cultural revolutions",
+      "timeline facts",
+      "civil rights",
+      "historical figures",
+      "royal families",
+      "archaeological finds"
+    ]
+  },
+  {
+    "name": "Art & Design",
+    "keywords": [
+      "digital art",
+      "drawing tutorials",
+      "painting ideas",
+      "art history",
+      "graphic design",
+      "sketching tips",
+      "color theory",
+      "3D modeling",
+      "art challenges",
+      "illustration techniques"
+    ]
+  },
+  {
+    "name": "Writing & Blogging",
+    "keywords": [
+      "blog post ideas",
+      "writing prompts",
+      "SEO writing",
+      "creative fiction",
+      "storytelling",
+      "editing tips",
+      "writing schedule",
+      "guest blogging",
+      "content calendar",
+      "writing goals"
+    ]
+  },
+  {
+    "name": "Language Learning",
+    "keywords": [
+      "vocabulary building",
+      "grammar tips",
+      "language apps",
+      "fluency practice",
+      "pronunciation",
+      "language immersion",
+      "daily words",
+      "conversation skills",
+      "language games",
+      "language exchange"
+    ]
+  },
+  {
+    "name": "Work-Life Balance",
+    "keywords": [
+      "time boundaries",
+      "burnout prevention",
+      "remote work tips",
+      "daily planning",
+      "personal time",
+      "unplugging",
+      "mental breaks",
+      "family balance",
+      "self-care time",
+      "work stress relief"
+    ]
+  },
+  {
+    "name": "Spirituality & Religion",
+    "keywords": [
+      "daily prayer",
+      "faith journey",
+      "spiritual growth",
+      "sacred texts",
+      "meditation and faith",
+      "rituals",
+      "religious holidays",
+      "spiritual practices",
+      "personal beliefs",
+      "spiritual leaders"
+    ]
+  },
+  {
+    "name": "Podcasts & Audiobooks",
+    "keywords": [
+      "top episodes",
+      "host interviews",
+      "genre picks",
+      "learning podcasts",
+      "true crime",
+      "motivational talks",
+      "business shows",
+      "fiction audio",
+      "tech podcasts",
+      "health podcasts"
+    ]
+  },
+  {
+    "name": "Parenting Humor",
+    "keywords": [
+      "funny parenting",
+      "toddler fails",
+      "mom jokes",
+      "dad humor",
+      "real-life parenting",
+      "school chaos",
+      "nap time drama",
+      "parenting memes",
+      "funny kids",
+      "everyday struggles"
+    ]
+  },
+  {
+    "name": "Minimalism",
+    "keywords": [
+      "decluttering",
+      "simple living",
+      "capsule wardrobe",
+      "intentional purchases",
+      "organization tips",
+      "minimal decor",
+      "digital minimalism",
+      "mindful habits",
+      "less is more",
+      "uncluttered life"
+    ]
+  },
+  {
+    "name": "TikTok Trends",
+    "keywords": [
+      "viral dances",
+      "funny skits",
+      "trending sounds",
+      "life hacks",
+      "duet videos",
+      "TikTok recipes",
+      "behind the scenes",
+      "daily vlogs",
+      "Q&A videos",
+      "fashion hauls"
+    ]
+  }
+]
