@@ -86,6 +86,7 @@ export const createPost = async (req, res) => {
         await option.save();
       }
     }
+    const optionsId = newSurvey.map((option) => option?._id);
     const linksId = [];
     if (links.length) {
       for (let i = 0; i < links.length; i++) {
@@ -99,7 +100,6 @@ export const createPost = async (req, res) => {
         linksId[i] = newId;
       }
     }
-    const optionsId = newSurvey.map((option) => option?._id);
     const newUsersTag = usersTag.map((userId) => ObjectId(userId));
     let categories = [];
     if (!!content.trim()) {
@@ -110,6 +110,7 @@ export const createPost = async (req, res) => {
             query: content,
           }
         );
+        console.log("relatedCategories: ", relatedCategories);
         if (relatedCategories?.length) {
           const catesQuery = await Category.find(
             {
@@ -180,7 +181,9 @@ export const deletePost = async (req, res) => {
     const postId = req.params.id;
     const userId = req.query.userId;
     if (!postId || !userId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty payload");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty payload" });
     }
     const post = await Post.findById(postId);
     if (!post) {
@@ -242,7 +245,7 @@ export const updatePost = async (req, res) => {
   try {
     let post = await Post.findById(postId);
     if (!post) {
-      return res.status(HTTPStatus.NOT_FOUND).json("Post not found");
+      return res.status(HTTPStatus.NOT_FOUND).json({ error: "Post not found" });
     }
 
     if (post.authorId.toString() !== payload.userId.toString()) {
@@ -250,10 +253,26 @@ export const updatePost = async (req, res) => {
         .status(HTTPStatus.UNAUTHORIZED)
         .json({ error: "Unauthorized to update this post" });
     }
-
+    let newSurvey = [];
+    if (survey.length) {
+      newSurvey = survey
+        .filter((option) => !!option.value)
+        .map((option) => {
+          const newOption = new SurveyOption({
+            placeholder: option.placeholder,
+            value: option.value,
+            _id: ObjectId(),
+            usersId: [],
+          });
+          return newOption;
+        });
+      for (let option of newSurvey) {
+        await option.save();
+      }
+    }
     post.content = content;
     post.media = media;
-    post.survey = survey;
+    post.survey = newSurvey;
     post = await post.save();
     res.status(HTTPStatus.OK).json(post);
   } catch (err) {
@@ -298,11 +317,10 @@ export const getPosts = async (req, res) => {
     const page = payload.page;
     const cacheKey = `feed:${pageFilter}:${userId}`;
     const cacheFeed = await getCache(cacheKey);
-    console.log("pageFilter: ", pageFilter);
     if (cacheFeed && !pageFilter?.includes("admin")) {
       const numberFeedPageCached = (cacheFeed as any)?.length;
       if (Number(page) <= numberFeedPageCached) {
-        return res.status(200).json(cacheFeed?.[page - 1]);
+        return res.status(HTTPStatus.OK).json(cacheFeed?.[page - 1]);
       }
     }
     const data = await getPostsIdByFilter(payload);
@@ -331,7 +349,9 @@ export const tickPostSurvey = async (req, res) => {
   try {
     const { optionId, userId, isAdd } = req.body;
     if (!optionId || !userId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty payload");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty payload" });
     }
     if (isAdd) {
       await SurveyOption.updateOne(
@@ -359,14 +379,18 @@ export const updatePostStatus = async (req, res) => {
   try {
     const { userId, postId, status } = req.body;
     if (!userId || !postId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty payload");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty payload" });
     }
     const userInfo = await User.findOne({
       _id: ObjectId(userId),
     });
     const isAdmin = userInfo?.role === Constants.USER_ROLE.ADMIN;
     if (!isAdmin) {
-      return res.status(HTTPStatus.UNAUTHORIZED).json("Only for admin");
+      return res
+        .status(HTTPStatus.UNAUTHORIZED)
+        .json({ error: "Only for admin" });
     }
     await Post.updateOne(
       {

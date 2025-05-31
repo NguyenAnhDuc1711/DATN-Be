@@ -11,7 +11,7 @@ export const getUserCollection = async (req, res) => {
     return data;
   } catch (err) {
     console.log(err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -19,7 +19,9 @@ export const addPostToCollection = async (req, res) => {
   try {
     const { userId, postId } = req.body;
     if (!userId || !postId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty payload");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty payload" });
     }
     const isValidCollection = await Collection.findOne({
       userId: ObjectId(userId),
@@ -44,7 +46,7 @@ export const addPostToCollection = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -52,7 +54,9 @@ export const removePostFromCollection = async (req, res) => {
   try {
     const { postId, userId } = req.body;
     if (!userId || !postId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty payload");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty payload" });
     }
     await Collection.findOneAndUpdate(
       {
@@ -74,6 +78,6 @@ export const removePostFromCollection = async (req, res) => {
     res.status(HTTPStatus.OK).json(result);
   } catch (err) {
     console.log(err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };

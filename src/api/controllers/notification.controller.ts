@@ -6,7 +6,7 @@ export const getNotifications = async (req, res) => {
   try {
     const { userId, page, limit } = req.body;
     if (!userId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty userId");
+      return res.status(HTTPStatus.BAD_REQUEST).json({ error: "Empty userId" });
     }
     const skip = (page - 1) * limit;
     const notifications = await Notification.aggregate([
@@ -68,6 +68,6 @@ export const getNotifications = async (req, res) => {
     res.status(HTTPStatus.OK).json(notifications);
   } catch (err) {
     console.error("getNotifications: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json("Internal server error");
+    res.status(HTTPStatus.SERVER_ERR).json({ error: "Internal server error" });
   }
 };

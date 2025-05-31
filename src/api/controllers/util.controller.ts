@@ -8,7 +8,9 @@ export const sendForgotPWMail = async (req, res) => {
   try {
     const { from, to, subject, code, url } = req.body;
     if (!from || !to) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty user's mail");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty user's mail" });
     }
     let decodedCode = decodeString(code);
     const userInfo = await User.findOne({ email: to });
@@ -32,6 +34,6 @@ export const sendForgotPWMail = async (req, res) => {
     res.status(HTTPStatus.OK).send(result);
   } catch (err) {
     console.log("sendForgotPWMail: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };

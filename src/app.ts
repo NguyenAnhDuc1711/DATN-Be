@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: false })); // to prase from data in the r
 app.use(cookieParser());
 app.use(helmet());
 const corOption = {
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "http://localhost:3001"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   preflightContinue: false,
   optionsSuccessStatus: 204,

@@ -8,6 +8,7 @@ import { sendForgotPWMail } from "../controllers/util.controller.js";
 import { getAllFiles, upload } from "../middlewares/upload.js";
 import File from "../models/file.model.js";
 import protectRoute from "../middlewares/protectRoute.js";
+import HTTPStatus from "../../util/httpStatus.js";
 
 const getFileType = (inputType) => {
   let fileType = "";
@@ -71,10 +72,10 @@ router.post(
         };
       });
       await File.insertMany(files, { ordered: false });
-      res.status(200).json(filesId);
+      res.status(HTTPStatus.OK).json(filesId);
     } catch (err) {
       console.log(err);
-      res.status(500).json(err);
+      res.status(HTTPStatus.SERVER_ERR).json(err);
     }
   }
 );

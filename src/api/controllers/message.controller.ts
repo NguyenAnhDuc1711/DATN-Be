@@ -10,7 +10,9 @@ export const getConversationByUsersId = async (req, res) => {
   try {
     const { userId, anotherId } = req.body;
     if (!userId || !anotherId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty payload");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty payload" });
     }
     const data = await Conversation.findOne({
       participants: { $all: [userId, anotherId] },
@@ -43,7 +45,7 @@ export const getConversationByUsersId = async (req, res) => {
     }
   } catch (err) {
     console.log("getConversationByUsersId: ", err.message);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -51,17 +53,21 @@ export const getConversationById = async (req, res) => {
   try {
     const { conversationId, userId } = req.query;
     if (!conversationId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty conversationId");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty conversationId" });
     }
     const data = await getConversationInfo({ conversationId, userId });
     if (!!data) {
       return res.status(HTTPStatus.OK).json(data);
     } else {
-      return res.status(HTTPStatus.NOT_FOUND).json("Invalid conversation");
+      return res
+        .status(HTTPStatus.NOT_FOUND)
+        .json({ error: "Invalid conversation" });
     }
   } catch (err) {
     console.log("getConversationById: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -69,7 +75,9 @@ export const getConversationMedia = async (req, res) => {
   try {
     const { conversationId } = req.body;
     if (!conversationId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty conversationId");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty conversationId" });
     }
     const msgs = await Message.find({
       conversationId: ObjectId(conversationId),
@@ -86,7 +94,7 @@ export const getConversationMedia = async (req, res) => {
     res.status(HTTPStatus.OK).json(media);
   } catch (err) {
     console.log("getConversationMedia: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -94,7 +102,9 @@ export const getConversationFiles = async (req, res) => {
   try {
     const { conversationId } = req.body;
     if (!conversationId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty conversationId");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty conversationId" });
     }
     const msgs = await Message.aggregate([
       {
@@ -126,7 +136,7 @@ export const getConversationFiles = async (req, res) => {
     res.status(HTTPStatus.OK).json(files);
   } catch (err) {
     console.log("getConversationFiles: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -134,7 +144,9 @@ export const getConversationLinks = async (req, res) => {
   try {
     const { conversationId } = req.body;
     if (!conversationId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty conversationId");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty conversationId" });
     }
     const msgWithLinks = await Message.aggregate([
       {
@@ -156,7 +168,7 @@ export const getConversationLinks = async (req, res) => {
     res.status(HTTPStatus.OK).json(linksInfo);
   } catch (err) {
     console.log("getConversationLinks: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -164,7 +176,9 @@ export const searchMsg = async (req, res) => {
   try {
     const { value, conversationId, page, limit } = req.body;
     if (!value || !conversationId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty payload");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty payload" });
     }
     const skip = (page - 1) * limit;
     const msgsFind = await Message.find({
@@ -180,7 +194,7 @@ export const searchMsg = async (req, res) => {
     res.status(HTTPStatus.OK).json(msgsFind);
   } catch (err) {
     console.log("getConversationLinks: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -191,7 +205,7 @@ export const handleFakeConversations = async (req, res) => {
     res.status(HTTPStatus.OK).json("OK");
   } catch (err) {
     console.log(err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -201,6 +215,6 @@ export const handleFakeConversationsMsgs = async (req, res) => {
     res.status(HTTPStatus.OK).json("OK");
   } catch (err) {
     console.log(err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };

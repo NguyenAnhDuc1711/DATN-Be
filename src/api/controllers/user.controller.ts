@@ -36,7 +36,7 @@ export const getAdminAccount = async (req, res) => {
     res.status(HTTPStatus.OK).json(adminAccount);
   } catch (err) {
     console.log(err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 //sign up
@@ -92,10 +92,10 @@ export const signupUser = async (req, res) => {
         JSON.stringify({ name, email, username, password, code }),
         expireTime * 60
       );
-      res.status(200).json("Mail was sent");
+      res.status(HTTPStatus.OK).json("Mail was sent");
     }
   } catch (err) {
-    res.status(HTTPStatus.SERVER_ERR).json({ error: "Server lỗi" });
+    res.status(HTTPStatus.SERVER_ERR).json({ error: "Server error" });
     console.log("Error in Signup User", err.message);
   }
 };
@@ -141,7 +141,7 @@ export const validateEmailByCode = async (req, res) => {
     }
   } catch (err) {
     console.log("validateEmailByCode err: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -173,7 +173,7 @@ export const loginUser = async (req, res) => {
 
     res.status(HTTPStatus.OK).json(result);
   } catch (err) {
-    res.status(HTTPStatus.SERVER_ERR).json({ error: "Server lỗi" });
+    res.status(HTTPStatus.SERVER_ERR).json({ error: "Server error" });
     console.log("Error in loginUser", err.message);
   }
 };
@@ -194,11 +194,13 @@ export const followUser = async (req, res) => {
   try {
     const { userFlId, userId } = req.body;
     if (!userFlId || !userId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty payload");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty payload" });
     }
     const userInfo = await User.findOne({ _id: ObjectId(userId) });
     if (!userInfo) {
-      return res.status(HTTPStatus.NOT_FOUND).json("Invalid user");
+      return res.status(HTTPStatus.NOT_FOUND).json({ error: "Invalid user" });
     }
     const userFollowing = JSON.parse(JSON.stringify(userInfo))?.following;
     const isFollowing = userFollowing?.includes(userFlId);
@@ -282,23 +284,31 @@ export const changePassword = async (req, res) => {
     const forgotPW = req.body?.forgotPW;
     const userId = req.params.id;
     if (!userId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty userId");
+      return res.status(HTTPStatus.BAD_REQUEST).json({ error: "Empty userId" });
     }
     if ((!currentPW || !newPW) && !forgotPW) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty payload");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty payload" });
     }
     const user = await User.findOne({ _id: ObjectId(userId) });
     if (!user) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("User not found");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "User not found" });
     }
     if (user.password !== currentPW && !forgotPW) {
-      return res.status(HTTPStatus.UNAUTHORIZED).json("Wrong password");
+      return res
+        .status(HTTPStatus.UNAUTHORIZED)
+        .json({ error: "Wrong password" });
     } else if (newPW.length < 6) {
       return res
         .status(HTTPStatus.BAD_REQUEST)
         .json("Password must be at least 6 characters");
     } else if (currentPW === newPW && !forgotPW) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Nothing change");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Nothing change" });
     }
     await User.updateOne(
       { _id: ObjectId(userId) },
@@ -309,7 +319,7 @@ export const changePassword = async (req, res) => {
     return res.status(HTTPStatus.OK).json("Success");
   } catch (err) {
     console.log(err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -320,7 +330,7 @@ export const getUserProfile = async (req, res) => {
   try {
     let user = null;
     if (!userId) {
-      return res.status(HTTPStatus.NO_CONTENT).json("Empty payload");
+      return res.status(HTTPStatus.NO_CONTENT).json({ error: "Empty payload" });
     }
     user = await getUserInfo(userId);
     if (!user)
@@ -350,16 +360,19 @@ export const getUserToFollows = async (req, res) => {
       return res.status(HTTPStatus.OK).json(users);
     }
     if (!userId) {
-      return res.status(HTTPStatus.UNAUTHORIZED).json("Unauthorize");
+      return res.status(HTTPStatus.UNAUTHORIZED).json({ error: "Unauthorize" });
     }
     if (!page || !limit) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Need page and limit");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Need page and limit" });
     }
     const userInfo = await User.findOne({ _id: ObjectId(userId) });
     const userCatesCare = userInfo?.catesCare;
-    let userFollowed = userInfo?.following ?? [];
-    userFollowed = userFollowed.map((id) => ObjectId(id));
-    const invalidToFollow = [...userFollowed, ObjectId(userId)];
+    // let userFollowed = userInfo?.following ?? [];
+    // userFollowed = userFollowed.map((id) => ObjectId(id));
+    // const invalidToFollow = [...userFollowed, ObjectId(userId)];
+    const invalidToFollow = [ObjectId(userId)];
 
     const agg = [
       {
@@ -405,7 +418,7 @@ export const getUserToFollows = async (req, res) => {
     });
     res.status(HTTPStatus.OK).json(data);
   } catch (err) {
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -415,7 +428,7 @@ export const handleCrawlFakeUsers = async (req, res) => {
     res.status(HTTPStatus.OK).json("Crawl success");
   } catch (err) {
     console.log("handleCrawlFakeUsers: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -423,11 +436,11 @@ export const getUsersFollow = async (req, res) => {
   try {
     const { userId } = req.query;
     if (!userId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty userId");
+      return res.status(HTTPStatus.BAD_REQUEST).json({ error: "Empty userId" });
     }
     const userInfo = await User.findOne({ _id: ObjectId(userId) });
     if (!userInfo) {
-      return res.status(HTTPStatus.NOT_FOUND).json("Invalid user");
+      return res.status(HTTPStatus.NOT_FOUND).json({ error: "Invalid user" });
     }
     const followedUsers = await User.find(
       {
@@ -459,7 +472,7 @@ export const getUsersFollow = async (req, res) => {
     });
   } catch (err) {
     console.log("getUsersFollow: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -467,7 +480,7 @@ export const getUsersToTag = async (req, res) => {
   try {
     let { userId, page, limit, searchValue } = req.query;
     if (!userId) {
-      return res.status(HTTPStatus.UNAUTHORIZED).json("Unauthorize");
+      return res.status(HTTPStatus.UNAUTHORIZED).json({ error: "Unauthorize" });
     }
     if (!page) {
       page = 1;
@@ -495,7 +508,7 @@ export const getUsersToTag = async (req, res) => {
     return data;
   } catch (err) {
     console.log("getUsersToTag: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -505,11 +518,15 @@ export const checkValidUser = async (req, res) => {
     const userId = payload?.userId;
     const userEmail = payload?.userEmail;
     if (!userId && !userEmail) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty payload");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Empty payload" });
     }
     const emailRegex = /\S+@\S+\.\S+/;
     if (!emailRegex.test(userEmail)) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Invalid email type");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Invalid email type" });
     }
     const userInfo = await User.findOne({
       $or: [{ _id: ObjectId(userId) }, { email: userEmail }],
@@ -521,7 +538,7 @@ export const checkValidUser = async (req, res) => {
     }
   } catch (err) {
     console.log("checkValidUser :", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -529,7 +546,7 @@ export const getUserIdFromEmail = async (req, res) => {
   try {
     const { userEmail } = req.body;
     if (!userEmail) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty email");
+      return res.status(HTTPStatus.BAD_REQUEST).json({ error: "Empty email" });
     }
     const userInfo = await User.findOne({
       email: userEmail,
@@ -537,7 +554,7 @@ export const getUserIdFromEmail = async (req, res) => {
     res.status(HTTPStatus.OK).json(userInfo._id);
   } catch (err) {
     console.log("getUserIdFromEmail: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -546,15 +563,19 @@ export const getUsersPendingPost = async (req, res) => {
     const { userId, page, limit, searchValue } = req.body;
     const skip = (page - 1) * limit;
     if (!userId) {
-      return res.status(HTTPStatus.UNAUTHORIZED).json("Unauthorize");
+      return res.status(HTTPStatus.UNAUTHORIZED).json({ error: "Unauthorize" });
     }
     if (!page || !limit) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Need page and limit");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Need page and limit" });
     }
     const userInfo = await User.findOne({ _id: ObjectId(userId) });
     const isAdmin = userInfo?.role === Constants.USER_ROLE.ADMIN;
     if (!isAdmin) {
-      return res.status(HTTPStatus.UNAUTHORIZED).json("Only for admin");
+      return res
+        .status(HTTPStatus.UNAUTHORIZED)
+        .json({ error: "Only for admin" });
     }
     const authorIds = (
       await Post.find(
@@ -586,7 +607,7 @@ export const getUsersWithStatus = async (req, res) => {
   try {
     const { userId, page, limit, searchValue } = req.query;
     if (!userId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty userId");
+      return res.status(HTTPStatus.BAD_REQUEST).json({ error: "Empty userId" });
     }
     const userInfo = await User.findOne({
       _id: ObjectId(userId),
@@ -618,6 +639,6 @@ export const getUsersWithStatus = async (req, res) => {
     });
   } catch (err) {
     console.log("getUsersWithStatus: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };

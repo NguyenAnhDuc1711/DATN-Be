@@ -10,7 +10,9 @@ export const sendReport = async (req, res) => {
   try {
     const { userId, content, media } = req.body;
     if (!userId) {
-      return res.status(HTTPStatus.UNAUTHORIZED).json("Unauthorized");
+      return res
+        .status(HTTPStatus.UNAUTHORIZED)
+        .json({ error: "Unauthorized" });
     }
     const userInfo = await User.findOne(
       {
@@ -23,7 +25,9 @@ export const sendReport = async (req, res) => {
     );
     const userEmail = userInfo?.email;
     if (!userEmail) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Invalid user email");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Invalid user email" });
     }
     let newMedia = [];
     if (media?.length > 0) {
@@ -44,7 +48,7 @@ export const sendReport = async (req, res) => {
     res.status(HTTPStatus.OK).json("Success");
   } catch (err) {
     console.log("sendReport: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -52,14 +56,16 @@ export const getReports = async (req, res) => {
   try {
     const { userId, searchValue, page, limit } = req.query;
     if (!userId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Empty userId");
+      return res.status(HTTPStatus.BAD_REQUEST).json({ error: "Empty userId" });
     }
     const userInfo = await User.findOne({
       _id: ObjectId(userId),
     });
     const isAdmin = userInfo?.role === Constants.USER_ROLE.ADMIN;
     if (!isAdmin) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Unauthorization");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Unauthorization" });
     }
     const agg = [
       {
@@ -123,7 +129,7 @@ export const getReports = async (req, res) => {
     res.status(HTTPStatus.OK).json(data);
   } catch (err) {
     console.log("getReports: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -131,7 +137,9 @@ export const responseReport = async (req, res) => {
   try {
     const { from, to, subject, html, userId, reportId } = req.body;
     if (!userId || !from || !to || !subject) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Invalid input");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Invalid input" });
     }
     const userInfo = await User.findOne({
       _id: ObjectId(userId),
@@ -159,7 +167,7 @@ export const responseReport = async (req, res) => {
     res.status(HTTPStatus.OK).json(result);
   } catch (err) {
     console.log("responseReport: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };
 
@@ -167,7 +175,9 @@ export const rejectReport = async (req, res) => {
   try {
     const { userId, reportId } = req.body;
     if (!userId || !reportId) {
-      return res.status(HTTPStatus.BAD_REQUEST).json("Invalid input");
+      return res
+        .status(HTTPStatus.BAD_REQUEST)
+        .json({ error: "Invalid input" });
     }
     const userInfo = await User.findOne({
       _id: ObjectId(userId),
@@ -189,6 +199,6 @@ export const rejectReport = async (req, res) => {
     res.status(HTTPStatus.OK).json("OK");
   } catch (err) {
     console.log("rejectReport: ", err);
-    res.status(HTTPStatus.SERVER_ERR).json(err);
+    res.status(HTTPStatus.SERVER_ERR).json({ error: err.message });
   }
 };

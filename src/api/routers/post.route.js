@@ -34,19 +34,5 @@ router.post(LIKE + ":id", protectRoute, likeUnlikePost);
 router.put(TICK_SURVEY, tickPostSurvey);
 router.post(CRAWL_POST, crawlPosts);
 router.post(UPDATE_POST_STATUS, updatePostStatus);
-router.post("/update-post-status", async (req, res) => {
-  try {
-    await Post.updateMany(
-      {},
-      {
-        status: 1,
-      }
-    );
-    res.status(200).json("OK");
-  } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
-  }
-});
 
 export default router;
