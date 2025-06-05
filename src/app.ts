@@ -22,7 +22,11 @@ app.use(express.urlencoded({ extended: false })); // to prase from data in the r
 app.use(cookieParser());
 app.use(helmet());
 const corOption = {
-  origin: ["http://localhost:3000", "http://localhost:3001"],
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
+  ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   preflightContinue: false,
   optionsSuccessStatus: 204,
@@ -32,8 +36,8 @@ app.use(cors(corOption));
 
 app.use("/api", router);
 
-// createDailyCollectionCron();
-// updateUsersCatesCron();
-app.get("/api/posts", getPostsWithContent);
-app.get("/api/assign-categories", assignRandomCategoriesToUsers);
+createDailyCollectionCron();
+updateUsersCatesCron();
+// app.get("/api/posts", getPostsWithContent);
+// app.get("/api/assign-categories", assignRandomCategoriesToUsers);
 export default app;

@@ -68,36 +68,43 @@ export default class MessageController {
           const urlRegex = /(https?:\/\/[^\s]+)/g;
           const urls = content.match(urlRegex);
           const links: any = [];
-          if (urls?.length) {
-            for (let url of urls) {
-              let result = {};
-              const previewLen = previewLinkKey?.length;
-              let index = 1;
-              try {
-                do {
-                  let key = previewLinkKey[index - 1];
-                  try {
-                    const { data } = await axios.get(
-                      `https://api.linkpreview.net?key=${key}&q=${url}`
-                    );
-                    if (data) {
-                      result = data;
+          try {
+            if (urls?.length) {
+              for (let url of urls) {
+                let result = null;
+                const previewLen = previewLinkKey?.length;
+                let index = 1;
+                try {
+                  do {
+                    let key = previewLinkKey[index - 1];
+                    try {
+                      const { data } = await axios.get(
+                        `https://api.linkpreview.net?key=${key}&q=${url}`
+                      );
+                      if (data) {
+                        result = data;
+                      }
+                    } catch (err) {
+                      index += 1;
+                      console.log("End of preview link quota: ", err);
                     }
-                  } catch (err) {
-                    index += 1;
-                    console.log("End of preview link quota: ", err);
-                  }
-                } while (index < previewLen && !result);
-              } catch (err) {
-                console.log("getLinkPreview: ", err);
-              }
-              if (typeof result == "object" && Object.keys(result).length > 0) {
-                links.push({
-                  _id: ObjectId(),
-                  ...result,
-                });
+                  } while (index < previewLen && !result);
+                } catch (err) {
+                  console.log("getLinkPreview: ", err);
+                }
+                if (
+                  typeof result == "object" &&
+                  Object.keys(result).length > 0
+                ) {
+                  links.push({
+                    _id: ObjectId(),
+                    ...result,
+                  });
+                }
               }
             }
+          } catch (err) {
+            console.error("getLinkPreview: ", err);
           }
           if (links?.length > 0) {
             await Link.insertMany(links, { ordered: false });

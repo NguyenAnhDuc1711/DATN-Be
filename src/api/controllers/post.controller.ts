@@ -317,12 +317,16 @@ export const getPosts = async (req, res) => {
     const page = payload.page;
     const cacheKey = `feed:${pageFilter}:${userId}`;
     const cacheFeed = await getCache(cacheKey);
-    if (cacheFeed && !pageFilter?.includes("admin")) {
-      const numberFeedPageCached = (cacheFeed as any)?.length;
-      if (Number(page) <= numberFeedPageCached) {
-        return res.status(HTTPStatus.OK).json(cacheFeed?.[page - 1]);
-      }
+    const isAdminPage = pageFilter?.includes("admin");
+    if (isAdminPage) {
+      payload.isAdminPage = true;
     }
+    // if (cacheFeed && !isAdminPage) {
+    //   const numberFeedPageCached = (cacheFeed as any)?.length;
+    //   if (Number(page) <= numberFeedPageCached) {
+    //     return res.status(HTTPStatus.OK).json(cacheFeed?.[page - 1]);
+    //   }
+    // }
     const data = await getPostsIdByFilter(payload);
     let result = [];
     if (data?.length) {
@@ -330,14 +334,16 @@ export const getPosts = async (req, res) => {
         data.map((id) => getPostDetail({ postId: id }))
       );
     }
-    let newCacheFeed;
-    if (cacheFeed) {
-      newCacheFeed = [...(cacheFeed as any), result];
-    } else {
-      newCacheFeed = result?.length ? [result] : [];
-    }
-    const numberHourExpireCache = 1;
-    await setCache(cacheKey, newCacheFeed, numberHourExpireCache * 60 * 60);
+    // let newCacheFeed;
+    // if (cacheFeed) {
+    //   newCacheFeed = [...(cacheFeed as any), result];
+    // } else {
+    //   newCacheFeed = result?.length ? [result] : [];
+    // }
+    // if (!isAdminPage) {
+    //   const numberHourExpireCache = 1;
+    //   await setCache(cacheKey, newCacheFeed, numberHourExpireCache * 60 * 60);
+    // }
     res.status(HTTPStatus.OK).json(result);
   } catch (err) {
     console.log("getPosts: ", err);

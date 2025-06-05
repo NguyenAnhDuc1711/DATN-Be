@@ -243,7 +243,7 @@ export const getForYouPostsId = async ({ userId, skip, limit }) => {
                 15,
               ],
             },
-            { $multiply: [{ $size: { $ifNull: ["$usersLike", []] } }, 5] },
+            { $multiply: [{ $size: { $ifNull: ["$usersLike", []] } }, 3] },
             { $multiply: [{ $size: { $ifNull: ["$replies", []] } }, 3] },
             { $multiply: [{ $size: { $ifNull: ["$media", []] } }, 2] },
             { $size: { $ifNull: ["$survey", []] } },
@@ -272,12 +272,14 @@ export const getForYouPostsId = async ({ userId, skip, limit }) => {
 export const getPostsIdByFilter = async (payload) => {
   try {
     let data = null;
-    let { filter, userId, page, limit } = payload;
-    if (!page) {
-      page = 1;
-    }
-    if (!limit) {
-      limit = 20;
+    let { filter, userId, page, limit, isAdminPage } = payload;
+    if (!isAdminPage) {
+      if (!page) {
+        page = 1;
+      }
+      if (!limit) {
+        limit = 20;
+      }
     }
     const { PENDING, PUBLIC, ONLY_ME, ONLY_FOLLOWERS, DELETED } =
       Constants.POST_STATUS;

@@ -14,15 +14,11 @@ const getUserActiveData = (datesData, dateRange) => {
       .filter((event) => formatDate(event.createdAt) == date)
       .map((event) => destructObjectId(event.userId));
 
-    // Deduplicate using object keys instead of Set
-    const uniqueIds = {};
-    userIds.forEach((id) => {
-      uniqueIds[id] = true;
-    });
+    const uniqueUserIds = new Set(userIds);
 
     return {
       date: date,
-      data: Object.keys(uniqueIds).length,
+      data: uniqueUserIds.size,
     };
   });
   return result;

@@ -63,7 +63,7 @@ export const getUserSocketByUserId = async (
   const listSocket = await getAllSockets(io);
   const socketsData = listSocket.map((sk) => sk.data as SocketData);
   const userSocketId = socketsData.find(
-    (socket) => socket.userId === userId
+    (socket) => socket.userId === userId.toString()
   )?.id;
   return userSocketId;
 };

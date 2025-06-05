@@ -2,7 +2,7 @@ import fs from "fs";
 import multer from "multer";
 import path from "path";
 
-let uploadFolder = "uploads";
+let uploadFolder = "./uploads";
 
 const uploadsDir = "./uploads";
 if (!fs.existsSync(uploadsDir)) {
@@ -24,16 +24,21 @@ const storage = multer.diskStorage({
 });
 
 export const getAllFiles = (folderPath) => {
+  // Make sure we're using a relative path
+  const relativePath = folderPath.startsWith("/")
+    ? `.${folderPath}`
+    : folderPath;
+
   return new Promise((resolve, reject) => {
-    fs.readdir(folderPath, (err, files) => {
+    fs.readdir(relativePath, (err, files) => {
       if (err) {
         return reject(err);
       }
 
       // Filter out directories and get only files
       const filePaths = files
-        .filter((file) => fs.statSync(path.join(folderPath, file)).isFile())
-        .map((file) => path.join(folderPath, file));
+        .filter((file) => fs.statSync(path.join(relativePath, file)).isFile())
+        .map((file) => path.join(relativePath, file));
 
       resolve(filePaths);
     });

@@ -38,7 +38,7 @@ router.post(
       const userId = req.query.userId;
       const filesName = req.body.filesName.split(",");
       const filesInfo = JSON.parse(JSON.stringify(req.files));
-      const dir = `../be/uploads/${userId}`;
+      const dir = `./uploads/${userId}`;
       const filesPath = await getAllFiles(dir);
       const urls = [];
       let i = 0;

@@ -10,9 +10,9 @@ import protectRoute from "../middlewares/protectRoute";
 
 const router = express.Router();
 
-router.get(REPORT_PATH.GET, protectRoute, getReports);
+router.get(REPORT_PATH.GET, getReports);
 router.post(REPORT_PATH.CREATE, protectRoute, sendReport);
-router.post(REPORT_PATH.RESPONSE, protectRoute, responseReport);
-router.post(REPORT_PATH.REJECT, protectRoute, rejectReport);
+router.post(REPORT_PATH.RESPONSE, responseReport);
+router.post(REPORT_PATH.REJECT, rejectReport);
 
 export default router;

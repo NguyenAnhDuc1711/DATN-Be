@@ -56,11 +56,68 @@ export default class PostController {
             target: postId,
           });
           const newNotification = await notificationInfo.save();
+          const notification = await Notification.aggregate([
+            { $match: { _id: ObjectId(newNotification._id) } },
+            {
+              $lookup: {
+                from: "users",
+                localField: "fromUser",
+                foreignField: "_id",
+                as: "fromUserDetails",
+              },
+            },
+            { $unwind: "$fromUserDetails" },
+            {
+              $lookup: {
+                from: "posts",
+                localField: "target",
+                foreignField: "_id",
+                as: "postDetails",
+              },
+            },
+            {
+              $unwind: {
+                path: "$postDetails",
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+            {
+              $addFields: {
+                FromUserDetails: {
+                  $cond: {
+                    if: { $eq: ["$action", "follow"] },
+                    then: {
+                      _id: "$fromUserDetails._id",
+                      name: "$fromUserDetails.name",
+                      username: "$fromUserDetails.username",
+                      bio: "$fromUserDetails.bio",
+                      avatar: "$fromUserDetails.avatar",
+                    },
+                    else: {
+                      username: "$fromUserDetails.username",
+                      avatar: "$fromUserDetails.avatar",
+                    },
+                  },
+                },
+              },
+            },
+            {
+              $project: {
+                fromUser: 1,
+                toUsers: 1,
+                action: 1,
+                target: 1,
+                createdAt: 1,
+                FromUserDetails: 1,
+                "postDetails.content": 1,
+              },
+            },
+          ]);
           await sendToSpecificUser({
             recipientId: postInfo.authorId,
             io,
             path: Route.NOTIFICATION + NOTIFICATION_PATH.GET_NEW,
-            payload: newNotification,
+            payload: notification?.[0],
           });
           await User.updateOne(
             {
